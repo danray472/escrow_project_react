@@ -1,0 +1,18 @@
+Admin dashboard
+- Tasks
+    - New
+    - Completed
+    - Verified
+- Writers
+    - Number
+- Payment
+    - Total
+    - Pending
+    - Completed
+
+Writer dashboard
+- Tasks
+    - New
+    - Completed
+    - Verified
+- Payment
