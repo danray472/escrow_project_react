@@ -5,6 +5,7 @@ import { useAuthValue } from "../assets/firebase/AuthContext";
 
 const SideMenu = () => {
   const { currentUser } = useAuthValue();
+  let user = JSON.parse(localStorage.getItem("upd"));
   return (
     <>
       <div className="drawer-side mt-16">
@@ -16,9 +17,11 @@ const SideMenu = () => {
           <li>
             <Link to={`/${currentUser.uid}/tasks`}>Tasks</Link>
           </li>
-          <li>
-            <Link to={`/${currentUser.uid}/writers`}>Writers</Link>
-          </li>
+          {user.user_type === "admin" && (
+            <li>
+              <Link to={`/${currentUser.uid}/writers`}>Writers</Link>
+            </li>
+          )}
           <li>
             <Link to={`/${currentUser.uid}/payments`}>Payments</Link>
           </li>
