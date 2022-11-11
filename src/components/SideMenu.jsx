@@ -1,29 +1,27 @@
 import { Link } from "react-router-dom";
 import { auth } from "../assets/firebase/firebase";
 import { signOut } from "firebase/auth";
-import { useAuthValue } from "../assets/firebase/AuthContext";
 
 const SideMenu = () => {
-  const { currentUser } = useAuthValue();
   return (
     <>
       <div className="drawer-side mt-16">
         <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
         <ul className="menu p-4 overflow-y-auto sm:w-1/2 md:w-80 bg-base-100 sticky">
           <li>
-            <Link to={`/${currentUser.uid}/dashboard`}>Dashboard</Link>
+            <Link to={`/dashboard`}>Dashboard</Link>
           </li>
           <li>
-            <Link to={`/${currentUser.uid}/tasks`}>Tasks</Link>
+            <Link to={`/tasks`}>Tasks</Link>
           </li>
           <li>
-            <Link to={`/${currentUser.uid}/writers`}>Writers</Link>
+            <Link to={`/writers`}>Writers</Link>
           </li>
           <li>
-            <Link to={`/${currentUser.uid}/payments`}>Payments</Link>
+            <Link to={`/payments`}>Payments</Link>
           </li>
           <li>
-            <Link to={`/${currentUser.uid}/profile`}>My Profile</Link>
+            <Link to={`/profile`}>My Profile</Link>
           </li>
           <li className="bg-error rounded-md text-base-100">
             <span

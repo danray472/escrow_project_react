@@ -2,7 +2,7 @@ import { db } from "../assets/firebase/firebase";
 import { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 
-const useFetchWriters = ({ database }) => {
+const useFetchWriters = () => {
   const [writersTotal, setWritersTotal] = useState(null);
   const [writersList, setWritersList] = useState(null);
   const writers = [];

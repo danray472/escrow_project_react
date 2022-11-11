@@ -74,16 +74,7 @@ const Navbar = () => {
           <span className="text-primary">Writers</span>
         </Link>
       </div>
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal p-0">
-          <li>
-            <Link to={"/about"}>About</Link>
-          </li>
-          <li>
-            <Link to={"/contact"}>Contact</Link>
-          </li>
-        </ul>
-      </div>
+      
       <div className="navbar-end">
         {!currentUser?.emailVerified ? (
           <>
