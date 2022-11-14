@@ -107,9 +107,7 @@ const FileUpload = () => {
                       {progress} %
                     </div>
                   </div>
-                  {/* {docPath && (
-                    <p className="underline">File path: {docPath.slice(0, 30)}...</p>
-                  )} */}
+                  
                   {progress === 100 && (
                     <div className="modal-action  uppercase">
                       <Link to={`/${currentUser.uid}/dashboard`}>

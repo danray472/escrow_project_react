@@ -148,6 +148,12 @@ function Register() {
     <div className="container mx-auto">
       <div className="min-h-full max-w-7xl flex items-center justify-center py-12 lg:px-8">
         <div className="mx-3 sm:w-full  md:max-w-md w-full space-y-8  mt-16">
+          <div className="flex justify-center">
+            <ul className="steps">
+              <li className="step step-primary">Register</li>
+              <li className="step">Verify account</li>
+            </ul>
+          </div>
           <img
             className="mx-auto h-12 w-auto"
             src="https://avatars.dicebear.com/api/identicon/your-custd.svg"

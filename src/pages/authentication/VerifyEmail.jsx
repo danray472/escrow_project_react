@@ -21,7 +21,7 @@ function VerifyEmail() {
         .then(() => {
           if (currentUser?.emailVerified) {
             clearInterval(interval);
-            setLoading(true)
+            setLoading(true);
             navigate(`/${currentUser.uid}/profile`);
             // if (userType === "admin") {
             // } else if (userType === "writer") {
@@ -63,6 +63,12 @@ function VerifyEmail() {
     <div className="container mx-auto items-center justify-center">
       <div className="min-h-full max-w-7xl flex items-center justify-center py-12 lg:px-8">
         <div className="mx-3 sm:w-full  md:max-w-md w-full space-y-8  mt-16">
+        <div className="flex justify-center">
+                <ul className="steps">
+                  <li className="step step-primary">Register</li>
+                  <li className="step step-primary">Verify account</li>
+                </ul>
+              </div>
           {loading ? (
             <div className="shadow-xl p-10 h-96 max-h-screen">
               <h3 className="mt-9 lg:text-2xl sm:text-xl text-primary pb-6 text-center">
@@ -79,7 +85,9 @@ function VerifyEmail() {
                   <p className="mt-2">{error}</p>
                 </div>
               )}
+              
               <div className="shadow-xl p-10  max-h-screen">
+
                 <h1 className="mt-9 lg:text-2xl sm:text-xl text-primary pb-6 text-center">
                   Verify your Email Address
                 </h1>

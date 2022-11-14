@@ -11,9 +11,11 @@ import { FiMoreVertical } from "react-icons/fi";
 import useFetchTasks from "./useFetchTasks";
 import { collection, doc, setDoc } from "firebase/firestore";
 import useFetchAdmin from "./useFetchAdmin";
+import { Link } from "react-router-dom";
 
 const ListFiles = () => {
   const [error, setError] = useState(null);
+  const [progress, setProgress] = useState(0);
   let tsk = null;
   const [admin, setAdmin] = useState("");
   let user = JSON.parse(localStorage.getItem("upd"));
@@ -105,6 +107,7 @@ const ListFiles = () => {
           // Show upload progress
           const uploadProgress =
             Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgress(uploadProgress);
         },
         //In case of error during uploading
         (err) => {
@@ -225,104 +228,162 @@ const ListFiles = () => {
                                         className="modal-toggle"
                                       />
                                       <div className="modal">
-                                        <form
-                                          className="modal-box"
-                                          onSubmit={fileHandler}
-                                        >
-                                          <div>
-                                            <label className="block text-md font-semibold text-neutral">
-                                              File upload
-                                            </label>
-                                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                              <div className="space-y-1 text-center">
-                                                <FaFileUpload className="mx-auto h-12 w-12 text-accent font-thin" />
+                                        {progress ? (
+                                          <>
+                                            <div className="modal-box flex flex-col items-center justify-around">
+                                              <h3 className="block text-md font-semibold text-neutral mb-9">
+                                                File upload
+                                                {progress === 100
+                                                  ? "ed"
+                                                  : "ing"}
+                                              </h3>
+                                              <div className="flex justify-center items-center">
+                                                <div
+                                                  className="radial-progress text-primary"
+                                                  style={{
+                                                    "--value": progress,
+                                                  }}
+                                                >
+                                                  {progress} %
+                                                </div>
+                                              </div>
 
-                                                <div className="flex text-sm text-gray-600">
-                                                  <label
-                                                    htmlFor="file-upload"
-                                                    className="relative cursor-pointer bg-base-100 rounded-md font-medium text-primary hover:underline"
+                                              {progress === 100 && (
+                                                <div className="modal-action  uppercase">
+                                                  <Link
+                                                    to={`/${currentUser.uid}/dashboard`}
                                                   >
-                                                    <input
-                                                      id="file-upload"
-                                                      name="file-upload"
-                                                      type="file"
-                                                      className="file:btn file:btn-sm file:btn-primary file:rounded-2xl"
-                                                      onClick={() => {
-                                                        setError(null);
-                                                      }}
-                                                    />
+                                                    <label
+                                                      htmlFor="profile-pic-modal"
+                                                      className="btn btn-sm btn-outline btn-error rounded-2xl"
+                                                    >
+                                                      close
+                                                    </label>
+                                                  </Link>
+                                                </div>
+                                              )}
+                                              {error && (
+                                                <div className="mt-12 text-sm uppercase p-4 text-base-100 bg-error text-center rounded-3xl">
+                                                  <label
+                                                    htmlFor="profile-pic-modal"
+                                                    className="mt-2"
+                                                  >
+                                                    {error}
                                                   </label>
                                                 </div>
-                                                <p className="text-xs text-accent">
-                                                  DOC, DOCX, XLS, XLSX, PNG, JPG
-                                                  and PDF up to 10MB
-                                                </p>
-                                                <input
-                                                  type="hidden"
-                                                  name=""
-                                                  value={(tsk = task.file_name)}
-                                                />
+                                              )}
+                                            </div>
+                                          </>
+                                        ) : (
+                                          <>
+                                            <form
+                                              className="modal-box"
+                                              onSubmit={fileHandler}
+                                            >
+                                              <div>
+                                                <label className="block text-md font-semibold text-neutral">
+                                                  File upload
+                                                </label>
+                                                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                                  <div className="space-y-1 text-center">
+                                                    <FaFileUpload className="mx-auto h-12 w-12 text-accent font-thin" />
 
-                                                <select
-                                                  className="select select-primary w-full rounded-full"
-                                                  value={admin}
-                                                  onChange={(e) =>
-                                                    setAdmin(e.target.value)
-                                                  }
-                                                  required
-                                                >
-                                                  <option
-                                                    defaultValue
-                                                    value={""}
-                                                    disabled
-                                                  >
-                                                    Submit to the admin
-                                                  </option>
-                                                  {adminList && (
-                                                    <>
-                                                      {adminList.map(
-                                                        (admin, _index) => (
-                                                          <option
-                                                            value={admin.email}
-                                                            key={_index}
-                                                          >
-                                                            {admin.first_name}{" "}
-                                                            {admin.second_name}
-                                                          </option>
-                                                        )
+                                                    <div className="flex text-sm text-gray-600">
+                                                      <label
+                                                        htmlFor="file-upload"
+                                                        className="relative cursor-pointer bg-base-100 rounded-md font-medium text-primary hover:underline"
+                                                      >
+                                                        <input
+                                                          id="file-upload"
+                                                          name="file-upload"
+                                                          type="file"
+                                                          className="file:btn file:btn-sm file:btn-primary file:rounded-2xl"
+                                                          onClick={() => {
+                                                            setError(null);
+                                                          }}
+                                                        />
+                                                      </label>
+                                                    </div>
+                                                    <p className="text-xs text-accent">
+                                                      DOC, DOCX, XLS, XLSX, PNG,
+                                                      JPG and PDF up to 10MB
+                                                    </p>
+                                                    <input
+                                                      type="hidden"
+                                                      name=""
+                                                      value={
+                                                        (tsk = task.file_name)
+                                                      }
+                                                    />
+
+                                                    <select
+                                                      className="select select-primary w-full rounded-full"
+                                                      value={admin}
+                                                      onChange={(e) =>
+                                                        setAdmin(e.target.value)
+                                                      }
+                                                      required
+                                                    >
+                                                      <option
+                                                        defaultValue
+                                                        value={""}
+                                                        disabled
+                                                      >
+                                                        Submit to the admin
+                                                      </option>
+                                                      {adminList && (
+                                                        <>
+                                                          {adminList.map(
+                                                            (admin, _index) => (
+                                                              <option
+                                                                value={
+                                                                  admin.email
+                                                                }
+                                                                key={_index}
+                                                              >
+                                                                {
+                                                                  admin.first_name
+                                                                }{" "}
+                                                                {
+                                                                  admin.second_name
+                                                                }
+                                                              </option>
+                                                            )
+                                                          )}
+                                                        </>
                                                       )}
-                                                    </>
-                                                  )}
-                                                </select>
+                                                    </select>
+                                                  </div>
+                                                </div>
                                               </div>
-                                            </div>
-                                          </div>
 
-                                          <div className="modal-action flex justify-between uppercase">
-                                            <label
-                                              htmlFor="profile-pic-modal"
-                                              className="btn btn-sm btn-outline btn-error rounded-2xl"
-                                            >
-                                              cancel
-                                            </label>
-                                            <button
-                                              type="submit"
-                                              className="btn btn-sm btn-primary rounded-2xl"
-                                            >
-                                              upload file
-                                            </button>
-                                          </div>
-                                          {error && (
-                                            <div className="mt-12 text-sm uppercase p-4 text-base-100 bg-error text-center rounded-3xl">
-                                              <label
-                                                htmlFor="profile-pic-modal"
-                                                className="mt-2"
-                                              >
-                                                {error}
-                                              </label>
-                                            </div>
-                                          )}
-                                        </form>
+                                              <div className="modal-action flex justify-between uppercase">
+                                                <label
+                                                  htmlFor="profile-pic-modal"
+                                                  className="btn btn-sm btn-outline btn-error rounded-2xl"
+                                                >
+                                                  cancel
+                                                </label>
+                                                <button
+                                                  type="submit"
+                                                  className="btn btn-sm btn-primary rounded-2xl"
+                                                >
+                                                  upload file
+                                                </button>
+                                              </div>
+                                              {error && (
+                                                <div className="mt-12 text-sm uppercase p-4 text-base-100 bg-error text-center rounded-3xl">
+                                                  <label
+                                                    htmlFor="profile-pic-modal"
+                                                    className="mt-2"
+                                                  >
+                                                    {error}
+                                                  </label>
+                                                </div>
+                                              )}
+                                            </form>
+                                          </>
+                                        )}
                                       </div>
                                     </>
                                   </>
