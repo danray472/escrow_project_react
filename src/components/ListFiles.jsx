@@ -125,6 +125,7 @@ const ListFiles = () => {
               {
                 file_name: fileName,
                 new_download_url: docPath,
+                completed_on: new Date(),
                 verification_status: "completed",
               },
               { merge: true }
@@ -145,6 +146,7 @@ const ListFiles = () => {
     await setDoc(
       taskRef,
       {
+        verified_on: new Date(),
         verification_status: "verified",
       },
       { merge: true }

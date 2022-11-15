@@ -70,14 +70,7 @@ const Writers = () => {
                             <h1 className="mt-8 text-xl font-bold">
                               Seems like you have no writers
                             </h1>
-                            <p className="zoom-area mb-5">
-                              Do you want to{" "}
-                              <b className="text-primary underline">
-                                <label htmlFor="profile-pic-modal">
-                                  find some?
-                                </label>
-                              </b>
-                            </p>
+                            
                             <div className="link-container text-center mb-3">
                               <VscWorkspaceUnknown className="mx-auto h-48 w-48 font-thin text-accent" />
                             </div>

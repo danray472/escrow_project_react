@@ -17,10 +17,16 @@ const SideMenu = () => {
           <li>
             <Link to={`/${currentUser.uid}/tasks`}>Tasks</Link>
           </li>
+
           {user.user_type === "admin" && (
-            <li>
-              <Link to={`/${currentUser.uid}/writers`}>Writers</Link>
-            </li>
+            <>
+              <li>
+                <Link to={`/${currentUser.uid}/writers`}>Writers</Link>
+              </li>
+              <li>
+                <Link to={`/${currentUser.uid}/reports`}>Reports</Link>
+              </li>
+            </>
           )}
           <li>
             <Link to={`/${currentUser.uid}/payments`}>Payments</Link>

@@ -36,17 +36,7 @@ const Navbar = () => {
                   />
                 </svg>
               </label>
-              <ul
-                tabIndex={0}
-                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 capitalize"
-              >
-                <li>
-                  <Link to={"/about"}>About</Link>
-                </li>
-                <li>
-                  <Link to={"/contact"}>Contact</Link>
-                </li>
-              </ul>
+              
             </>
           ) : (
             <>

@@ -10,14 +10,13 @@ import { onAuthStateChanged } from "firebase/auth";
 import PrivateRoute from "./assets/route/PrivateRoute";
 import { Navigate } from "react-router-dom";
 import Home from "./pages/common/Home";
-import About from "./pages/common/About";
-import Contact from "./pages/common/Contact";
 import PageNotFound from "./pages/common/PageNotFound";
 import Dashboard from "./pages/admin/Dashboard";
 import Payment from "./pages/admin/Payment";
 import Tasks from "./pages/admin/Tasks";
 import Writers from "./pages/admin/Writers";
 import OtherDetails from "./pages/authentication/OtherDetails";
+import Reports from "./pages/admin/Reports";
 
 function App() {
   // User state
@@ -47,8 +46,6 @@ function App() {
               )
             }
           />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
 
           <Route
             path="/login"
@@ -118,7 +115,15 @@ function App() {
                 <Profile />
               </PrivateRoute>
             }
-          />
+          /><Route
+          exact
+          path={`/:uid/reports`}
+          element={
+            <PrivateRoute>
+              <Reports />
+            </PrivateRoute>
+          }
+        />
         </Routes>
       </AuthProvider>
     </Router>
