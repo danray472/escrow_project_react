@@ -4,14 +4,48 @@ import Navbar from "../../components/Navbar";
 import SideMenu from "../../components/SideMenu";
 import useFetchWriters from "../../components/useFetchWriters";
 import useFetchTasks from "../../components/useFetchTasks";
-// import DownloadData from "../../components/DownloadData";
+import { AiOutlineDownload } from "react-icons/ai";
+import { ExportToCsv } from "export-to-csv";
 
 const Reports = () => {
   const [error, setError] = useState(null);
   const { writersTotal, writersList } = useFetchWriters({ db });
-  const { tasksTotal,tasksList, newTasksTotal, completedTasksTotal, verifiedTasksTotal } =
-    useFetchTasks();
-    
+  const [titles, setTitles] = useState(null);
+  const {
+    tasksTotal,
+    tasksList,
+    newTasksTotal,
+    newTasksList,
+    completedTasksTotal,
+    completedTasksList,
+    verifiedTasksTotal,
+    verifiedTasksList,
+  } = useFetchTasks();
+
+  const downloadData = (data) => {
+    const arr = data;
+    const newArr = arr.map(({ download_url, new_download_url, ...rest }) => {
+      return rest;
+    });
+    const options = {
+      fieldSeparator: ",",
+      quoteStrings: '"',
+      decimalSeparator: ".",
+      showLabels: true,
+      showTitle: true,
+      title: "Report",
+      useTextFile: false,
+      useBom: true,
+      useKeysAsHeaders: true,
+    };
+    const csvExporter = new ExportToCsv(options);
+    if (newArr.length > 0) {
+      csvExporter.generateCsv(newArr);
+      setError("");
+    } else {
+      setError("Data not present");
+    }
+  };
 
   return (
     <>
@@ -52,7 +86,15 @@ const Reports = () => {
                                 {tasksTotal}
                               </div>
                               <div className="stat-desc mt-4">
-                                {/* <DownloadData excelData={tasksList} fileName={'Escrow Online Writers-Tasks'} /> */}
+                                <button
+                                  className="btn btn-primary w-full"
+                                  onClick={(e) => {
+                                    downloadData(tasksList);
+                                  }}
+                                >
+                                  Download{" "}
+                                  <AiOutlineDownload className="w-6 h-6" />
+                                </button>
                               </div>
                             </div>
                           </div>
@@ -64,8 +106,16 @@ const Reports = () => {
                               <div className="stat-value text-primary">
                                 {writersTotal}
                               </div>
-                              <div className="stat-desc">
-                                21% more than last month
+                              <div className="stat-desc mt-4">
+                                <button
+                                  className="btn btn-primary w-full"
+                                  onClick={(e) => {
+                                    downloadData(writersList);
+                                  }}
+                                >
+                                  Download{" "}
+                                  <AiOutlineDownload className="w-6 h-6" />
+                                </button>
                               </div>
                             </div>
                           </div>
@@ -94,6 +144,17 @@ const Reports = () => {
                                 <div className="stat-value">
                                   {newTasksTotal}
                                 </div>
+                                <div className="stat-desc mt-4">
+                                  <button
+                                    className="btn btn-outline w-full"
+                                    onClick={(e) => {
+                                      downloadData(newTasksList);
+                                    }}
+                                  >
+                                    Download{" "}
+                                    <AiOutlineDownload className="w-6 h-6" />
+                                  </button>
+                                </div>
                               </div>
                             </div>
                             <div className="stats shadow-md w-full sm:max-w-xs bg-warning text-base-100">
@@ -104,6 +165,15 @@ const Reports = () => {
                                 <div className="stat-value">
                                   {completedTasksTotal}
                                 </div>
+                                <button
+                                  className="btn btn-outline w-full"
+                                  onClick={(e) => {
+                                    downloadData(completedTasksList);
+                                  }}
+                                >
+                                  Download{" "}
+                                  <AiOutlineDownload className="w-6 h-6" />
+                                </button>
                               </div>
                             </div>
                             <div className="stats shadow-md w-full sm:max-w-xs bg-success text-base-100">
@@ -112,6 +182,15 @@ const Reports = () => {
                                 <div className="stat-value">
                                   {verifiedTasksTotal}
                                 </div>
+                                <button
+                                  className="btn btn-outline w-full"
+                                  onClick={(e) => {
+                                    downloadData(verifiedTasksList);
+                                  }}
+                                >
+                                  Download{" "}
+                                  <AiOutlineDownload className="w-6 h-6" />
+                                </button>
                               </div>
                             </div>
                           </div>

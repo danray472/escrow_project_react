@@ -19,6 +19,26 @@ const ListFiles = () => {
   let tsk = null;
   const [admin, setAdmin] = useState("");
   let user = JSON.parse(localStorage.getItem("upd"));
+  // Date formatting
+  function padTo2Digits(num) {
+    return num.toString().padStart(2, '0');
+  }
+  
+  function formatDate(date) {
+    return (
+      [
+        date.getFullYear(),
+        padTo2Digits(date.getMonth() + 1),
+        padTo2Digits(date.getDate()),
+      ].join('-') +
+      ' ' +
+      [
+        padTo2Digits(date.getHours()),
+        padTo2Digits(date.getMinutes()),
+        padTo2Digits(date.getSeconds()),
+      ].join(':')
+    );
+  }
   // Show the files uploaded
   const {
     tasksTotal,
@@ -125,7 +145,7 @@ const ListFiles = () => {
               {
                 file_name: fileName,
                 new_download_url: docPath,
-                completed_on: new Date(),
+                completed_on: formatDate(new Date()),
                 verification_status: "completed",
               },
               { merge: true }
@@ -146,7 +166,7 @@ const ListFiles = () => {
     await setDoc(
       taskRef,
       {
-        verified_on: new Date(),
+        verified_on: formatDate(new Date()),
         verification_status: "verified",
       },
       { merge: true }

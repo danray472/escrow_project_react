@@ -6,6 +6,7 @@ import { FaFileUpload } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useAuthValue } from "../assets/firebase/AuthContext";
 import { db, store } from "../assets/firebase/firebase";
+import {filesize} from "filesize";
 import useFetchWriters from "./useFetchWriters";
 
 const FileUpload = () => {
@@ -15,6 +16,28 @@ const FileUpload = () => {
   const [error, setError] = useState(null);
   const [writer, setWriter] = useState("");
   const [progress, setProgress] = useState(0);
+
+  // Date formatting
+  function padTo2Digits(num) {
+    return num.toString().padStart(2, '0');
+  }
+  
+  function formatDate(date) {
+    return (
+      [
+        date.getFullYear(),
+        padTo2Digits(date.getMonth() + 1),
+        padTo2Digits(date.getDate()),
+      ].join('-') +
+      ' ' +
+      [
+        padTo2Digits(date.getHours()),
+        padTo2Digits(date.getMinutes()),
+        padTo2Digits(date.getSeconds()),
+      ].join(':')
+    );
+  }
+
   const fileHandler = (e) => {
     e && e.preventDefault();
     // Grab the file
@@ -55,8 +78,8 @@ const FileUpload = () => {
             {
               file_name: file.name,
               uploaded_by: user.email,
-              file_size: file.size,
-              upload_date: new Date(),
+              file_size: filesize(file.size, {base: 2, standard: "jedec"}),
+              upload_date: formatDate(new Date()),
               assigned_to: writer,
               download_url: docPath,
               verification_status: "new",
