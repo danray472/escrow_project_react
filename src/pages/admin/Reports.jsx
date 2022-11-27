@@ -6,6 +6,7 @@ import useFetchWriters from "../../components/useFetchWriters";
 import useFetchTasks from "../../components/useFetchTasks";
 import { AiOutlineDownload } from "react-icons/ai";
 import { ExportToCsv } from "export-to-csv";
+import useFetchPayments from "../../components/useFetchPayments";
 
 const Reports = () => {
   const [error, setError] = useState(null);
@@ -21,6 +22,15 @@ const Reports = () => {
     verifiedTasksTotal,
     verifiedTasksList,
   } = useFetchTasks();
+  const {
+    userCash,
+    paymentsTotal,
+    paymentsList,
+    pendingPaymentsTotal,
+    pendingPaymentsList,
+    completedPaymentsTotal,
+    completedPaymentsList,
+  } = useFetchPayments();
 
   const downloadData = (data) => {
     const arr = data;
@@ -125,10 +135,18 @@ const Reports = () => {
                                 Payment
                               </div>
                               <div className="stat-value text-primary">
-                                89,400
+                                {paymentsTotal}
                               </div>
-                              <div className="stat-desc">
-                                21% more than last month
+                              <div className="stat-desc mt-4">
+                                <button
+                                  className="btn btn-primary w-full"
+                                  onClick={(e) => {
+                                    downloadData(paymentsList);
+                                  }}
+                                >
+                                  Download{" "}
+                                  <AiOutlineDownload className="w-6 h-6" />
+                                </button>
                               </div>
                             </div>
                           </div>
@@ -191,6 +209,57 @@ const Reports = () => {
                                   Download{" "}
                                   <AiOutlineDownload className="w-6 h-6" />
                                 </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="mb-5">
+                          <h3 className="mt-8 mb-4 text-left text-xl font-extrabold text-neutral">
+                            Payments
+                          </h3>
+                          <div className="w-full flex items-center justify-center ">
+                            <div className="w-full flex sm:flex-wrap md:flex-nowrap sm:justify-center lg:justify-start mb-6 sm:gap-4 lg:gap-8">
+                              <div className="stats shadow-md w-full sm:max-w-xs lg:max-w-sm bg-warning text-base-100">
+                                <div className="stat">
+                                  <div className="stat-title">
+                                    Pending Payments
+                                  </div>
+                                  <div className="stat-value">
+                                    {pendingPaymentsTotal}
+                                  </div>
+                                  <div className="stat-desc mt-4">
+                                <button
+                                  className="btn btn-outline w-full"
+                                  onClick={(e) => {
+                                    downloadData(pendingPaymentsList);
+                                  }}
+                                >
+                                  Download{" "}
+                                  <AiOutlineDownload className="w-6 h-6" />
+                                </button>
+                              </div>
+                                </div>
+                              </div>
+                              <div className="stats shadow-md w-full sm:max-w-xs bg-success text-base-100">
+                                <div className="stat">
+                                  <div className="stat-title">
+                                    Completed Payments
+                                  </div>
+                                  <div className="stat-value">
+                                    {completedPaymentsTotal}
+                                  </div>
+                                  <div className="stat-desc mt-4">
+                                <button
+                                  className="btn btn-outline w-full"
+                                  onClick={(e) => {
+                                    downloadData(completedPaymentsList);
+                                  }}
+                                >
+                                  Download{" "}
+                                  <AiOutlineDownload className="w-6 h-6" />
+                                </button>
+                              </div>
+                                </div>
                               </div>
                             </div>
                           </div>

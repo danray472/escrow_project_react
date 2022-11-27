@@ -18,12 +18,13 @@ import {
   where,
 } from "firebase/firestore";
 import useFetchAdmin from "./useFetchAdmin";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useFetchWriters from "./useFetchWriters";
 import useFetchPayments from "./useFetchPayments";
 import { useAuthValue } from "../assets/firebase/AuthContext";
 
 const ListFiles = () => {
+  const navigate = useNavigate();
   const { currentUser } = useAuthValue();
   const [error, setError] = useState(null);
   const { writersList } = useFetchWriters();
@@ -186,7 +187,6 @@ const ListFiles = () => {
       },
       { merge: true }
     );
-    writerPayment(fileName);
   };
 
   // For payment of the writer
@@ -250,6 +250,11 @@ const ListFiles = () => {
     } else {
       setError("Insufficient funds");
     }
+  };
+  const verifyAndTransfer = (fileName) => {
+    verifyDoc(fileName);
+    writerPayment(fileName);
+    navigate(`/${currentUser.uid}/dashboard`);
   };
 
   return (
@@ -569,18 +574,57 @@ const ListFiles = () => {
                                         </button>
                                       </li>
                                       {user.user_type === "admin" && (
-                                        <li>
-                                          <button
-                                            className="btn btn-sm btn-ghost"
-                                            onClick={() => {
-                                              verifyDoc(task.file_name);
-                                            }}
-                                          >
-                                            Verify assignment
-                                          </button>
-                                        </li>
+                                        <>
+                                          <li>
+                                            <label
+                                              htmlFor="my-modal-6"
+                                              className="btn btn-sm btn-ghost"
+                                            >
+                                              Verify assignment
+                                            </label>
+                                          </li>
+                                        </>
                                       )}
                                     </ul>
+                                    <input
+                                      type="checkbox"
+                                      id="my-modal-6"
+                                      className="modal-toggle"
+                                    />
+                                    <div className="modal modal-bottom sm:modal-middle">
+                                      <div className="modal-box">
+                                        <h3 className="font-bold text-lg">
+                                          Verify assignment and transfer money
+                                          to the writer
+                                        </h3>
+                                        <p className="py-4">
+                                          This will verify the task and transfer
+                                          the money held in escrow account to
+                                          the writer who completed the task.
+                                        </p>
+                                        <p className="mt-2 text-xs p-2 bg-warning text-center rounded-3xl animate-pulse">
+                                          ! CAUTION ! <br />
+                                          This action is permanent and
+                                          irreversible.
+                                        </p>
+                                        <div className="modal-action">
+                                          <label
+                                            htmlFor="my-modal-6"
+                                            className="btn btn-error"
+                                          >
+                                            cancel
+                                          </label>
+                                          <button
+                                            className="btn btn-success"
+                                            onClick={() => {
+                                              verifyAndTransfer(task.file_name);
+                                            }}
+                                          >
+                                            complete transaction
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>

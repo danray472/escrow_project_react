@@ -32,7 +32,7 @@ const AdminDashboard = ({ currentUser }) => {
         <div className="stats shadow-md w-full sm:max-w-xs bg-base-100 text-neutral">
           <Link to={`/${currentUser.uid}/payments`}>
             <div className="stat">
-              <div className="stat-title font-bold">Payment</div>
+              <div className="stat-title font-bold">Escrow account</div>
               <div className="stat-value text-primary">{userCash}</div>
               <div className="stat-desc">21% more than last month</div>
             </div>
