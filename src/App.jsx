@@ -40,7 +40,7 @@ function App() {
             path="/"
             element={
               !currentUser?.emailVerified ? (
-                <Home />
+                <Login />
               ) : (
                 <Navigate to={`/${currentUser.uid}/dashboard`} replace />
               )

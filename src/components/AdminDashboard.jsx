@@ -6,17 +6,18 @@ import useFetchPayments from "./useFetchPayments";
 const AdminDashboard = ({ currentUser }) => {
   const { writersTotal } = useFetchWriters();
   const { userCash } = useFetchPayments();
-  const { tasksTotal, newTasksTotal,completedTasksTotal,verifiedTasksTotal } = useFetchTasks();
+  const { tasksTotal, newTasksTotal, completedTasksTotal, verifiedTasksTotal } =
+    useFetchTasks();
+  const { pendingPaymentsTotal, completedPaymentsTotal } = useFetchPayments();
 
   return (
-    <div className="mb-8">
+    <div className="mb-8  w-full">
       <div className="flex sm:flex-wrap md:flex-nowrap sm:justify-center lg:justify-start mb-6 sm:gap-4 lg:gap-8">
         <div className="stats shadow-md w-full sm:max-w-xs bg-base-100 text-neutral">
           <Link to={`/${currentUser.uid}/tasks`}>
             <div className="stat">
               <div className="stat-title font-bold">Total Tasks</div>
               <div className="stat-value text-primary">{tasksTotal}</div>
-              <div className="stat-desc">21% more than last month</div>
             </div>
           </Link>
         </div>
@@ -25,16 +26,14 @@ const AdminDashboard = ({ currentUser }) => {
             <div className="stat">
               <div className="stat-title font-bold">Writers</div>
               <div className="stat-value text-primary">{writersTotal}</div>
-              <div className="stat-desc">21% more than last month</div>
             </div>
           </Link>
         </div>
-        <div className="stats shadow-md w-full sm:max-w-xs bg-base-100 text-neutral">
+        <div className="stats shadow-md w-full sm:max-w-sm bg-base-100 text-neutral">
           <Link to={`/${currentUser.uid}/payments`}>
             <div className="stat">
               <div className="stat-title font-bold">Escrow account</div>
               <div className="stat-value text-primary">{userCash}</div>
-              <div className="stat-desc">21% more than last month</div>
             </div>
           </Link>
         </div>
@@ -60,6 +59,25 @@ const AdminDashboard = ({ currentUser }) => {
             <div className="stat">
               <div className="stat-title">Verified Tasks</div>
               <div className="stat-value">{verifiedTasksTotal}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mb-5">
+        <h3 className="mt-8 mb-4 text-left text-xl font-extrabold text-neutral">
+          Payments
+        </h3>
+        <div className="flex sm:flex-wrap md:flex-nowrap sm:justify-center lg:justify-start mb-6 sm:gap-4 lg:gap-8">
+          <div className="stats shadow-md w-full sm:max-w-xs lg:max-w-sm bg-warning text-base-100">
+            <div className="stat">
+              <div className="stat-title">Pending Payments</div>
+              <div className="stat-value">{pendingPaymentsTotal}</div>
+            </div>
+          </div>
+          <div className="stats shadow-md w-full sm:max-w-xs bg-success text-base-100">
+            <div className="stat">
+              <div className="stat-title">Completed Payments</div>
+              <div className="stat-value">{completedPaymentsTotal}</div>
             </div>
           </div>
         </div>

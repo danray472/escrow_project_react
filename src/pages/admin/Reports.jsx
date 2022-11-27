@@ -23,7 +23,6 @@ const Reports = () => {
     verifiedTasksList,
   } = useFetchTasks();
   const {
-    userCash,
     paymentsTotal,
     paymentsList,
     pendingPaymentsTotal,
@@ -132,7 +131,7 @@ const Reports = () => {
                           <div className="stats shadow-md w-full sm:max-w-xs bg-base-100 text-neutral">
                             <div className="stat">
                               <div className="stat-title font-bold">
-                                Payment
+                                Transactions
                               </div>
                               <div className="stat-value text-primary">
                                 {paymentsTotal}
