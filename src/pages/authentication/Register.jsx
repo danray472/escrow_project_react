@@ -76,6 +76,7 @@ function Register() {
                   first_name: fName,
                   second_name: sName,
                   phone_number: phone,
+                  my_cash: 0,
                 },
                 { merge: true }
               ).then(() => {
@@ -114,6 +115,7 @@ function Register() {
                   first_name: fName,
                   second_name: sName,
                   phone_number: phone,
+                  my_cash: 0,
                 },
                 { merge: true }
               ).then(() => {

@@ -6,35 +6,38 @@ import { FaFileUpload } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useAuthValue } from "../assets/firebase/AuthContext";
 import { db, store } from "../assets/firebase/firebase";
-import {filesize} from "filesize";
+import { filesize } from "filesize";
 import useFetchWriters from "./useFetchWriters";
+import useFetchPayments from "./useFetchPayments";
 
 const FileUpload = () => {
   const { writersList } = useFetchWriters();
-  const { currentUser } = useAuthValue();
-  let user = JSON.parse(localStorage.getItem("upd"));
+  const { currentUser } = useAuthValue();  
+  const { userCash } = useFetchPayments();
   const [error, setError] = useState(null);
   const [writer, setWriter] = useState("");
+  const userType = "admin";
+  const [cash, setCash] = useState(null);
   const [progress, setProgress] = useState(0);
 
   // Date formatting
   function padTo2Digits(num) {
-    return num.toString().padStart(2, '0');
+    return num.toString().padStart(2, "0");
   }
-  
+
   function formatDate(date) {
     return (
       [
         date.getFullYear(),
         padTo2Digits(date.getMonth() + 1),
         padTo2Digits(date.getDate()),
-      ].join('-') +
-      ' ' +
+      ].join("-") +
+      " " +
       [
         padTo2Digits(date.getHours()),
         padTo2Digits(date.getMinutes()),
         padTo2Digits(date.getSeconds()),
-      ].join(':')
+      ].join(":")
     );
   }
 
@@ -67,9 +70,13 @@ const FileUpload = () => {
         setError(err.message);
       },
       async () => {
-        // Saving document uploaded to the database
-
+        // Saving document uploaded and payment to the database
         const taskColRef = collection(db, "tasks");
+        let user = JSON.parse(localStorage.getItem("upd"));
+        const userColRef = collection(db, "admin");
+        const paymentsColRef = collection(db, "payment");
+        const userRef = doc(userColRef, currentUser.uid);
+        const paymentsRef = doc(paymentsColRef, file.name);
         const taskRef = doc(taskColRef, file.name);
         await getDownloadURL(uploadDoc.snapshot.ref).then((url) => {
           const docPath = url;
@@ -78,14 +85,36 @@ const FileUpload = () => {
             {
               file_name: file.name,
               uploaded_by: user.email,
-              file_size: filesize(file.size, {base: 2, standard: "jedec"}),
+              file_size: filesize(file.size, { base: 2, standard: "jedec" }),
               upload_date: formatDate(new Date()),
               assigned_to: writer,
               download_url: docPath,
               verification_status: "new",
+              pay: parseInt(cash),
             },
             { merge: true }
           );
+          if (user.user_type === userType) {
+            setDoc(
+              userRef,
+              {
+                my_cash: parseInt(userCash) + parseInt(cash),
+              },
+              { merge: true }
+            );
+            setDoc(
+              paymentsRef,
+              {
+                transaction_name: file.name,
+                made_by: user.email,
+                assigned_to: writer,
+                status: "pending",
+                amount: parseInt(cash),
+                transaction_date: formatDate(new Date()),
+              },
+              { merge: true }
+            );
+          }
         });
       }
     );
@@ -130,7 +159,7 @@ const FileUpload = () => {
                       {progress} %
                     </div>
                   </div>
-                  
+
                   {progress === 100 && (
                     <div className="modal-action  uppercase">
                       <Link to={`/${currentUser.uid}/dashboard`}>
@@ -182,27 +211,41 @@ const FileUpload = () => {
                         <p className="text-xs text-accent">
                           DOC, DOCX, XLS, XLSX, PNG, JPG and PDF up to 10MB
                         </p>
-                        
-                            <select
-                              className="select select-primary w-full rounded-full"
-                              value={writer}
-                              onChange={(e) => setWriter(e.target.value)}
-                              required
-                            >
-                              <option defaultValue value={""} disabled>
-                                Assign a writer
-                              </option>
-                              {writersList && (
-                                <>
-                                  {writersList.map((writer, _index) => (
-                                    <option value={writer.email} key={_index}>
-                                      {writer.first_name} {writer.second_name}
-                                    </option>
-                                  ))}
-                                </>
-                              )}
-                            </select>
-                          
+
+                        <select
+                          className="select select-primary w-full rounded-full mb-4"
+                          value={writer}
+                          onChange={(e) => setWriter(e.target.value)}
+                          required
+                        >
+                          <option defaultValue value={""} disabled>
+                            Assign a writer
+                          </option>
+                          {writersList && (
+                            <>
+                              {writersList.map((writer, _index) => (
+                                <option value={writer.email} key={_index}>
+                                  {writer.first_name} {writer.second_name}
+                                </option>
+                              ))}
+                            </>
+                          )}
+                        </select>
+                        <input
+                          id="cash"
+                          type="number"
+                          value={cash}
+                          required
+                          onInvalid={(e) =>
+                            e.target.setCustomValidity(
+                              "Fill in your cash amount"
+                            )
+                          }
+                          onInput={(e) => e.target.setCustomValidity("")}
+                          placeholder="Enter amount"
+                          className="input input-bordered input-primary w-full rounded-full"
+                          onChange={(e) => setCash(e.target.value)}
+                        />
                       </div>
                     </div>
                   </div>

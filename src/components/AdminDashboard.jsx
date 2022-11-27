@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import useFetchWriters from "./useFetchWriters";
 import useFetchTasks from "./useFetchTasks";
+import useFetchPayments from "./useFetchPayments";
 
 const AdminDashboard = ({ currentUser }) => {
   const { writersTotal } = useFetchWriters();
+  const { userCash } = useFetchPayments();
   const { tasksTotal, newTasksTotal,completedTasksTotal,verifiedTasksTotal } = useFetchTasks();
 
   return (
@@ -31,7 +33,7 @@ const AdminDashboard = ({ currentUser }) => {
           <Link to={`/${currentUser.uid}/payments`}>
             <div className="stat">
               <div className="stat-title font-bold">Payment</div>
-              <div className="stat-value text-primary">89,400</div>
+              <div className="stat-value text-primary">{userCash}</div>
               <div className="stat-desc">21% more than last month</div>
             </div>
           </Link>

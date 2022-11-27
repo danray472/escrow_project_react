@@ -9,34 +9,48 @@ import {
 } from "react-icons/ai";
 import { FiMoreVertical } from "react-icons/fi";
 import useFetchTasks from "./useFetchTasks";
-import { collection, doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import useFetchAdmin from "./useFetchAdmin";
 import { Link } from "react-router-dom";
+import useFetchWriters from "./useFetchWriters";
+import useFetchPayments from "./useFetchPayments";
+import { useAuthValue } from "../assets/firebase/AuthContext";
 
 const ListFiles = () => {
+  const { currentUser } = useAuthValue();
   const [error, setError] = useState(null);
+  const { writersList } = useFetchWriters();
   const [progress, setProgress] = useState(0);
   let tsk = null;
   const [admin, setAdmin] = useState("");
+  const { userCash } = useFetchPayments();
+  const userType = "admin";
   let user = JSON.parse(localStorage.getItem("upd"));
   // Date formatting
   function padTo2Digits(num) {
-    return num.toString().padStart(2, '0');
+    return num.toString().padStart(2, "0");
   }
-  
+
   function formatDate(date) {
     return (
       [
         date.getFullYear(),
         padTo2Digits(date.getMonth() + 1),
         padTo2Digits(date.getDate()),
-      ].join('-') +
-      ' ' +
+      ].join("-") +
+      " " +
       [
         padTo2Digits(date.getHours()),
         padTo2Digits(date.getMinutes()),
         padTo2Digits(date.getSeconds()),
-      ].join(':')
+      ].join(":")
     );
   }
   // Show the files uploaded
@@ -163,6 +177,7 @@ const ListFiles = () => {
     // Changing verification status
     const taskColRef = collection(db, "tasks");
     const taskRef = doc(taskColRef, fileName);
+
     await setDoc(
       taskRef,
       {
@@ -171,6 +186,70 @@ const ListFiles = () => {
       },
       { merge: true }
     );
+    writerPayment(fileName);
+  };
+
+  // For payment of the writer
+  const writerPayment = async (fileName) => {
+    if (userCash && userCash > 0) {
+      const adminColRef = collection(db, "admin");
+      const paymentsColRef = collection(db, "payment");
+      const adminRef = doc(adminColRef, currentUser.uid);
+      const paymentsRef = doc(paymentsColRef, fileName);
+      const q = query(
+        paymentsColRef,
+        where("transaction_name", "==", fileName)
+      );
+      const queryTask = await getDocs(q);
+      queryTask.forEach((ok) => {
+        if (ok) {
+          const writer = ok.data().assigned_to;
+          const cash = ok.data().amount;
+          const wrtr = writersList.filter((w) => w.email === writer);
+          const wrtr_cash = wrtr[0].my_cash;
+          const userColRef = collection(db, "users");
+          const w = query(userColRef, where("email", "==", writer));
+          const findWriter = async () => {
+            const queryCash = await getDocs(w);
+            queryCash.forEach((ok) => {
+              if (ok) {
+                const userRef = doc(userColRef, ok.id);
+                setDoc(
+                  userRef,
+                  {
+                    my_cash: wrtr_cash + cash,
+                  },
+                  { merge: true }
+                );
+              }
+            });
+          };
+          if (user.user_type === userType) {
+            findWriter();
+            setDoc(
+              adminRef,
+              {
+                my_cash: parseInt(userCash) - parseInt(cash),
+              },
+              { merge: true }
+            );
+
+            setDoc(
+              paymentsRef,
+              {
+                status: "completed",
+                disbursement_date: formatDate(new Date()),
+              },
+              { merge: true }
+            );
+          }
+        } else {
+          setError("Writer not found");
+        }
+      });
+    } else {
+      setError("Insufficient funds");
+    }
   };
 
   return (
