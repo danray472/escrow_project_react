@@ -6,6 +6,7 @@ import {
   AiOutlineFileUnknown,
   AiOutlineDownload,
   AiOutlineUpload,
+  AiFillFastBackward,
 } from "react-icons/ai";
 import { FiMoreVertical } from "react-icons/fi";
 import useFetchTasks from "./useFetchTasks";
@@ -32,6 +33,7 @@ const ListFiles = () => {
   let tsk = null;
   const [admin, setAdmin] = useState("");
   const { userCash } = useFetchPayments();
+
   const userType = "admin";
   let user = JSON.parse(localStorage.getItem("upd"));
   // Date formatting
@@ -173,6 +175,21 @@ const ListFiles = () => {
     }
   };
 
+  // For task resubmission
+  const resubmitTask = async (fileName) => {
+    // Changing verification status
+    const taskColRef = collection(db, "tasks");
+    const taskRef = doc(taskColRef, fileName);
+
+    await setDoc(
+      taskRef,
+      {
+        verification_status: "new",
+      },
+      { merge: true }
+    );
+  };
+
   // For admin to verify task
   const verifyDoc = async (fileName) => {
     // Changing verification status
@@ -187,6 +204,7 @@ const ListFiles = () => {
       },
       { merge: true }
     );
+    navigate(`/${currentUser.uid}/dashboard`);
   };
 
   // For payment of the writer
@@ -223,26 +241,25 @@ const ListFiles = () => {
                 );
               }
             });
+            if (user.user_type === userType) {
+              setDoc(
+                adminRef,
+                {
+                  my_cash: userCash - cash,
+                },
+                { merge: true }
+              );
+              setDoc(
+                paymentsRef,
+                {
+                  status: "completed",
+                  disbursement_date: formatDate(new Date()),
+                },
+                { merge: true }
+              );
+            }
           };
-          if (user.user_type === userType) {
-            findWriter();
-            setDoc(
-              adminRef,
-              {
-                my_cash: parseInt(userCash) - parseInt(cash),
-              },
-              { merge: true }
-            );
-
-            setDoc(
-              paymentsRef,
-              {
-                status: "completed",
-                disbursement_date: formatDate(new Date()),
-              },
-              { merge: true }
-            );
-          }
+          findWriter();
         } else {
           setError("Writer not found");
         }
@@ -251,6 +268,8 @@ const ListFiles = () => {
       setError("Insufficient funds");
     }
   };
+
+  // Handles verify and payment
   const verifyAndTransfer = (fileName) => {
     verifyDoc(fileName);
     writerPayment(fileName);
@@ -548,33 +567,37 @@ const ListFiles = () => {
                                     <AiOutlineDownload className="mx-auto justify-center h-6 w-6" />
                                   </button>
                                 </div>
-                                <div
-                                  className="w-1/6 flex justify-center items-center"
-                                  title="Upload completed task"
-                                >
-                                  <div className="dropdown dropdown-end">
-                                    <label
-                                      tabIndex={0}
-                                      className="btn btn-outline btn-primary rounded-full p-2"
-                                    >
-                                      <FiMoreVertical className="mx-auto justify-center h-6 w-6" />
-                                    </label>
-                                    <ul
-                                      tabIndex={0}
-                                      className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
-                                    >
-                                      <li>
-                                        <button
-                                          className="btn btn-sm btn-ghost"
-                                          onClick={() => {
-                                            downloadPrevDoc(task.download_url);
-                                          }}
-                                        >
-                                          Download original
-                                        </button>
-                                      </li>
-                                      {user.user_type === "admin" && (
+                                <div className="w-1/6 flex justify-center items-center justify-between">
+                                  <button
+                                    className="btn btn-outline btn-primary rounded-full p-2"
+                                    title="Download original"
+                                    onClick={() => {
+                                      downloadPrevDoc(task.download_url);
+                                    }}
+                                  >
+                                    <AiFillFastBackward className="mx-auto justify-center h-6 w-6" />
+                                  </button>
+                                  {user.user_type === "admin" && (
+                                    <div className="dropdown dropdown-end">
+                                      <label
+                                        tabIndex={0}
+                                        className="btn btn-outline btn-primary rounded-full p-2"
+                                      >
+                                        <FiMoreVertical className="mx-auto justify-center h-6 w-6" />
+                                      </label>
+                                      <ul
+                                        tabIndex={0}
+                                        className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-50"
+                                      >
                                         <>
+                                          <li>
+                                            <label
+                                              htmlFor="my-modal-7"
+                                              className="btn btn-sm btn-ghost"
+                                            >
+                                              Resubmission
+                                            </label>
+                                          </li>
                                           <li>
                                             <label
                                               htmlFor="my-modal-6"
@@ -584,48 +607,84 @@ const ListFiles = () => {
                                             </label>
                                           </li>
                                         </>
-                                      )}
-                                    </ul>
-                                    <input
-                                      type="checkbox"
-                                      id="my-modal-6"
-                                      className="modal-toggle"
-                                    />
-                                    <div className="modal modal-bottom sm:modal-middle">
-                                      <div className="modal-box">
-                                        <h3 className="font-bold text-lg">
-                                          Verify assignment and transfer money
-                                          to the writer
-                                        </h3>
-                                        <p className="py-4">
-                                          This will verify the task and transfer
-                                          the money held in escrow account to
-                                          the writer who completed the task.
-                                        </p>
-                                        <p className="mt-2 text-xs p-2 bg-warning text-center rounded-3xl animate-pulse">
-                                          ! CAUTION ! <br />
-                                          This action is permanent and
-                                          irreversible.
-                                        </p>
-                                        <div className="modal-action">
-                                          <label
-                                            htmlFor="my-modal-6"
-                                            className="btn btn-error"
-                                          >
-                                            cancel
-                                          </label>
-                                          <button
-                                            className="btn btn-success"
-                                            onClick={() => {
-                                              verifyAndTransfer(task.file_name);
-                                            }}
-                                          >
-                                            complete transaction
-                                          </button>
+                                      </ul>
+                                      <input
+                                        type="checkbox"
+                                        id="my-modal-6"
+                                        className="modal-toggle"
+                                      />
+                                      <div className="modal modal-bottom sm:modal-middle">
+                                        <div className="modal-box">
+                                          <h3 className="font-bold text-lg">
+                                            Verify assignment and transfer money
+                                            to the writer
+                                          </h3>
+                                          <p className="py-4">
+                                            This will verify the task and
+                                            transfer the money held in escrow
+                                            account to the writer who completed
+                                            the task.
+                                          </p>
+                                          <p className="mt-2 text-xs p-2 bg-warning text-center rounded-3xl animate-pulse">
+                                            ! CAUTION ! <br />
+                                            This action is permanent and
+                                            irreversible.
+                                          </p>
+                                          <div className="modal-action">
+                                            <label
+                                              htmlFor="my-modal-6"
+                                              className="btn btn-error"
+                                            >
+                                              cancel
+                                            </label>
+                                            <button
+                                              className="btn btn-success"
+                                              onClick={() => {
+                                                verifyAndTransfer(
+                                                  task.file_name
+                                                );
+                                              }}
+                                            >
+                                              complete transaction
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <input
+                                        type="checkbox"
+                                        id="my-modal-7"
+                                        className="modal-toggle"
+                                      />
+                                      <div className="modal modal-bottom sm:modal-middle">
+                                        <div className="modal-box">
+                                          <h3 className="font-bold text-lg">
+                                            Return the assignment to writer
+                                          </h3>
+                                          <p className="py-4">
+                                            This will return the assignment to
+                                            writer for them to submit the
+                                            correct task.
+                                          </p>
+                                          <div className="modal-action">
+                                            <label
+                                              htmlFor="my-modal-7"
+                                              className="btn btn-error"
+                                            >
+                                              cancel
+                                            </label>
+                                            <button
+                                              className="btn btn-info"
+                                              onClick={() => {
+                                                resubmitTask(task.file_name);
+                                              }}
+                                            >
+                                              complete
+                                            </button>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
+                                  )}
                                 </div>
                               </div>
                               <hr />

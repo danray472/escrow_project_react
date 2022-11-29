@@ -1,74 +1,24 @@
+import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 
 const Home = () => {
   return (
     <>
       <Navbar />
-      <div className="w-full bg-secondary">
-        <div className="max-w-7xl mx-auto">
-          <div className="py-6 sm:px-6 lg:px-8">
-            <div className="mt-16 carousel w-full">
-              <div id="slide1" className="carousel-item relative w-full">
-                <img
-                  src="https://placeimg.com/800/200/arch"
-                  alt=""
-                  className="w-full"
-                />
-                <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                  <a href="#slide4" className="btn btn-circle">
-                    ❮
-                  </a>
-                  <a href="#slide2" className="btn btn-circle">
-                    ❯
-                  </a>
-                </div>
-              </div>
-              <div id="slide2" className="carousel-item relative w-full">
-                <img
-                  src="https://placeimg.com/800/200/arch"
-                  alt=""
-                  className="w-full"
-                />
-                <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                  <a href="#slide1" className="btn btn-circle">
-                    ❮
-                  </a>
-                  <a href="#slide3" className="btn btn-circle">
-                    ❯
-                  </a>
-                </div>
-              </div>
-              <div id="slide3" className="carousel-item relative w-full">
-                <img
-                  src="https://placeimg.com/800/200/arch"
-                  alt=""
-                  className="w-full"
-                />
-                <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                  <a href="#slide2" className="btn btn-circle">
-                    ❮
-                  </a>
-                  <a href="#slide4" className="btn btn-circle">
-                    ❯
-                  </a>
-                </div>
-              </div>
-              <div id="slide4" className="carousel-item relative w-full">
-                <img
-                  src="https://placeimg.com/800/200/arch"
-                  alt=""
-                  className="w-full"
-                />
-                <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                  <a href="#slide3" className="btn btn-circle">
-                    ❮
-                  </a>
-                  <a href="#slide1" className="btn btn-circle">
-                    ❯
-                  </a>
-                </div>
-              </div>
-            </div>
+      <div className="hero min-h-screen bg-base-200">
+        <div className="hero-content text-center">
+          <div className="max-w-md">
+            <h1 className="text-5xl font-bold">Hello there</h1>
+            <p className="py-6">
+              This system addresses the problem of account holders in online
+              writing getting scammed by fraudsters. The objective of this
+              project is to develop an effective, reliable, system where both
+              the account holder and writer can work in a trustworthy
+              environment.
+            </p>
+            <Link to={"/login"} className="btn btn-sm btn-primary">
+              Get started
+            </Link>
           </div>
         </div>
       </div>

@@ -247,32 +247,6 @@ function Register() {
                     <div className="mb-9">
                       <div className="relative">
                         <label htmlFor="email-address" className="sr-only">
-                          Email address
-                        </label>
-                        <label className="cursor-pointer w-8 h-8 absolute top-1/2 transform -translate-y-1/2 right-3 flex justify-center items-center">
-                          <AiOutlineMail className="w-5 h-5 text-neutral" />
-                        </label>
-                        <input
-                          id="email-address"
-                          type="email"
-                          value={email}
-                          autoComplete="email"
-                          required
-                          onInvalid={(e) =>
-                            e.target.setCustomValidity("Enter valid email")
-                          }
-                          onInput={(e) => e.target.setCustomValidity("")}
-                          placeholder="Email address"
-                          className="input input-bordered input-neutral w-full rounded-full focus:input-primary"
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="rounded-md shadow-sm">
-                    <div className="mb-9">
-                      <div className="relative">
-                        <label htmlFor="email-address" className="sr-only">
                           Phone number
                         </label>
                         <label className="cursor-pointer w-8 h-8 absolute top-1/2 transform -translate-y-1/2 right-3 flex justify-center items-center">
@@ -296,6 +270,33 @@ function Register() {
                       </div>
                     </div>
                   </div>
+                  <div className="rounded-md shadow-sm">
+                    <div className="mb-9">
+                      <div className="relative">
+                        <label htmlFor="email-address" className="sr-only">
+                          Email address
+                        </label>
+                        <label className="cursor-pointer w-8 h-8 absolute top-1/2 transform -translate-y-1/2 right-3 flex justify-center items-center">
+                          <AiOutlineMail className="w-5 h-5 text-neutral" />
+                        </label>
+                        <input
+                          id="email-address"
+                          type="email"
+                          value={email}
+                          autoComplete="email"
+                          required
+                          onInvalid={(e) =>
+                            e.target.setCustomValidity("Enter valid email")
+                          }
+                          onInput={(e) => e.target.setCustomValidity("")}
+                          placeholder="Email address"
+                          className="input input-bordered input-neutral w-full rounded-full focus:input-primary"
+                          onChange={(e) => setEmail(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
 
                   <div className="rounded-md shadow-sm">
                     <div className="mb-9">

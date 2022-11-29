@@ -22,7 +22,7 @@ function VerifyEmail() {
           if (currentUser?.emailVerified) {
             clearInterval(interval);
             setLoading(true);
-            navigate(`/${currentUser.uid}/profile`);
+            navigate(`/login`);
             // if (userType === "admin") {
             // } else if (userType === "writer") {
             // } else {
