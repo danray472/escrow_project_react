@@ -677,7 +677,7 @@ const ListFiles = () => {
                                               onClick={() => {
                                                 resubmitTask(task.file_name);
                                               }}
-                                            >
+                                            > 
                                               complete
                                             </button>
                                           </div>
