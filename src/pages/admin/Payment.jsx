@@ -1,10 +1,20 @@
 import { useState } from "react";
+import { collection, doc, setDoc } from "firebase/firestore";
 import Navbar from "../../components/Navbar";
 import SideMenu from "../../components/SideMenu";
 import useFetchPayments from "../../components/useFetchPayments";
+import { useAuthValue } from "../../assets/firebase/AuthContext";
+import { db } from "../../assets/firebase/firebase";
+import { useNavigate } from "react-router-dom";
+
 
 const Payment = () => {
+  const { currentUser } = useAuthValue();
+  const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const [cash, setCash] = useState(null);
+  const userType = "admin";
+  let user = JSON.parse(localStorage.getItem("upd"));
   const {
     userCash,
     paymentsTotal,
@@ -14,6 +24,32 @@ const Payment = () => {
     completedPaymentsTotal,
     completedPaymentsList,
   } = useFetchPayments();
+
+  // For writers to withdraw funds
+  const fileHandler = (e) => {
+    e && e.preventDefault();
+    if (cash) {
+      withdrawCash(cash);
+      navigate(`/${currentUser.uid}/dashboard`);
+    }
+  };
+  const withdrawCash = async (funds) => {
+    if (!funds) {
+      return setError("Kindly put amount to be withdrawn");
+    }
+    if (userCash < funds) {
+      return setError("Insufficient balance");
+    }
+    const userColRef = collection(db, "users");
+    const userRef = doc(userColRef, currentUser.uid);
+    setDoc(
+      userRef,
+      {
+        my_cash: userCash - funds,
+      },
+      { merge: true }
+    );
+  };
   return (
     <>
       <Navbar />
@@ -38,13 +74,90 @@ const Payment = () => {
                 <div className="mx-auto mb-6">
                   <div className="stats shadow-md w-full max-w-md bg-base-100 text-neutral">
                     <div className="stat">
-                      <div className="stat-title font-bold">
-                        Account Balance
-                      </div>
+                      {user.user_type === userType ? (
+                        <div className="stat-title font-bold">
+                          Escrow Balance
+                        </div>
+                      ) : (
+                        <div className="stat-title font-bold">
+                          Account Balance
+                        </div>
+                      )}
+
                       <div className="stat-value text-primary">{userCash}</div>
                       <div className="stat-desc mt-4">
                         Total transactions {paymentsTotal}
                       </div>
+                      {user.user_type != userType && (
+                        <>
+                          <label
+                            htmlFor="my-modal-9"
+                            className="btn btn-primary my-2 btn-sm"
+                          >
+                            Withdraw cash
+                          </label>
+                          <input
+                            type="checkbox"
+                            id="my-modal-9"
+                            className="modal-toggle"
+                          />
+                          <div className="modal">
+                            <form className="modal-box" onSubmit={fileHandler}>
+                              <div>
+                                <label className="block text-md font-semibold text-neutral">
+                                  Withdraw cash
+                                </label>
+                              </div>
+                              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                <div className="space-y-1 text-center">
+                                  <input
+                                    id="cash"
+                                    type="number"
+                                    value={cash}
+                                    required
+                                    onInvalid={(e) =>
+                                      e.target.setCustomValidity(
+                                        "Fill in your cash amount"
+                                      )
+                                    }
+                                    onInput={(e) =>
+                                      e.target.setCustomValidity("")
+                                    }
+                                    placeholder="Enter amount"
+                                    className="input input-bordered input-primary w-full rounded-full"
+                                    onChange={(e) => setCash(e.target.value)}
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="modal-action flex justify-between uppercase">
+                                <label
+                                  htmlFor="my-modal-9"
+                                  className="btn btn-sm btn-outline btn-error rounded-2xl"
+                                >
+                                  cancel
+                                </label>
+                                <button
+                                  type="submit"
+                                  className="btn btn-sm btn-primary rounded-2xl"
+                                >
+                                  Withdraw
+                                </button>
+                              </div>
+                              {error && (
+                                <div className="mt-12 text-sm uppercase p-4 text-base-100 bg-error text-center rounded-3xl">
+                                  <label
+                                    htmlFor="profile-pic-modal"
+                                    className="mt-2"
+                                  >
+                                    {error}
+                                  </label>
+                                </div>
+                              )}
+                            </form>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                   <div className="w-full flex items-center justify-center py-12 lg:px-8">
