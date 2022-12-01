@@ -1,18 +1,64 @@
-Admin dashboard
-- Tasks
-    - New
-    - Completed
-    - Verified
-- Writers
-    - Number
-- Payment
-    - Total
-    - Pending
-    - Completed
+Setting up the project
 
-Writer dashboard
-- Tasks
-    - New
-    - Completed
-    - Verified
-- Payment
+This is a project that is made up of the following technologies
+    - ReactJS for the front-end using the building tool called Vite
+    - Firebase for the server and back-end
+    - TailwindCSS and DaisyUI for the CSS styling
+
+To set up Firebase, you shall follow the following instructions
+
+1. Go to this site and follow the instructions
+    https://cloud.google.com/sdk/docs/install
+
+To set up the project, you shall follow the following instructions
+
+1. The required programs needed to run the project are
+    Visual Studio Code
+    NodeJS
+
+2. Go to this GitHub link and download the zipped folder then extract it
+    https://github.com/savin2001/escrow-online-writers-003bdee615d14f6fb542a7b46f8492cfc802962d
+
+3. Once downloaded, open your terminal or command prompt and insert the following commands.
+    node -v
+    if NodeJS is installed it will show you a version e.g.
+    v16.15.1
+    otherwise if not installed, you can go to this site to download the program, install it then run the tested command above
+    https://nodejs.org/en/download/
+    Ensure the downloaded version is v16 and above
+
+4. Once NodeJS is installed, run the following command on your terminal to install the latest version of npm (a necessary package manager)
+    npm install -g npm
+    After it has installed, check if it exists in your computer by using this command 
+    npm -v
+    It should show a version of 8 or higher e.g.
+    8.12.2
+
+5. Once npm is installed, you shall download Visual Studio Code from the following site and then install it.
+    https://code.visualstudio.com/download
+
+6. Once installed, you can open it and then check on the top left there is a menu.
+    Select File then among the option select Open folder and go select the folder that was extracted in step 2.
+    It should open the various files and folders of the project folder.
+
+7. While still in VS Code, you can check on the menu for terminal and click on it.
+    Select the New terminal option and it shall open a small command prompt at the bottom.
+
+8. In order to prepare the project and install the necessary dependencies, you shall write the following command
+    npm install
+    This installs all the dependencies that are required by the project and you can view them inside your package.json file in you file directory.
+    It adds a new folder called node_modules inside your project folder.
+
+9. Once it has finished installing, you can run the project by typing the following command in your terminal down there.
+    npm run dev
+    This opens the development server and you can go to you browser and type the url to see the results
+    The url can be a number such as
+    http://127.0.0.1:5173/
+
+10. You can now showcase the project locally on your browser. For the database part, you can go to the firebase site and show the firestore, storage and authentication.
+11. You build a production-ready site by running the following command
+    npm run build
+12. You can also showcase the functioning site using the link below
+    https://escrow-online-writers.netlify.app/
+
+
