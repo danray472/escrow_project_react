@@ -637,7 +637,9 @@ const ListFiles = () => {
                                             >
                                               cancel
                                             </label>
-                                            <button
+
+                                            <Link
+                                              to={`/${currentUser.uid}/dashboard`}
                                               className="btn btn-success"
                                               onClick={() => {
                                                 verifyAndTransfer(
@@ -646,7 +648,7 @@ const ListFiles = () => {
                                               }}
                                             >
                                               complete transaction
-                                            </button>
+                                            </Link>
                                           </div>
                                         </div>
                                       </div>
@@ -672,14 +674,15 @@ const ListFiles = () => {
                                             >
                                               cancel
                                             </label>
-                                            <button
+                                            <Link
+                                              to={`/${currentUser.uid}/dashboard`}
                                               className="btn btn-info"
                                               onClick={() => {
                                                 resubmitTask(task.file_name);
                                               }}
-                                            > 
+                                            >
                                               complete
-                                            </button>
+                                            </Link>
                                           </div>
                                         </div>
                                       </div>
